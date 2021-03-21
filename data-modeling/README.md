@@ -42,3 +42,21 @@
 - Denormalization: 
   - It will not feel as natural; 
   - Must be done in read heavy workloads to increase performance;
+
+- Objectives of Normal Form:
+  - To free the database from unwanted insertions, updates and deletion dependencies;
+  - To reduce the need for refactoring the database as new types of data are introduced;
+  - To make the relational model more informative of users;
+  - to make the database neutral to the query statistics;
+  - Normal Forms:
+    - 1NF:
+      - Atomic values: each cell contains unique and single values;
+      - Be able to add data without altering tables;
+      - Keep relationships between tables together with foreign keys;
+    - 2NF:
+      - Have reached 1NF;
+      - All columns in the table must rely on the PK;
+    - 3NF:
+      - Must be in 2nd NF;
+      - No transitive dependencies;
+   
