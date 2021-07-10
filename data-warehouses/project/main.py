@@ -1,8 +1,9 @@
 from config import Config
+from pipe import ETL, DatabaseManager
 
 if __name__ == '__main__':
-  config = Config()
-  print(config.log_data)
-  print(config.log_path)
-  print(config.song_data)
-  print(config.iam_role)
+  #Startup database tables
+  database_manager = DatabaseManager()
+  database_manager.process()
+  etl = ETL()
+  etl.process()
