@@ -4,13 +4,17 @@ from sql_queries import copy_table_queries, insert_table_queries
 
 
 def load_staging_tables(cur, conn):
+    print('Inserting data from json files into staging tables')
     for query in copy_table_queries:
+        print('Running ' + query)
         cur.execute(query)
         conn.commit()
 
 
 def insert_tables(cur, conn):
+    print('Inserting data from staging tables into analytics tables')
     for query in insert_table_queries:
+        print('Running ' + query)
         cur.execute(query)
         conn.commit()
 
