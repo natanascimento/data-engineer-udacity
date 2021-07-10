@@ -208,3 +208,45 @@ class SQLQueries:
         time_table_drop = "DROP TABLE IF EXISTS dim_time"
         
         return [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
+
+class ETL: 
+
+    def __init__(self):
+        self.__sql_queries = SQLQueries()
+        self.__config = Config()
+        self.__db_cluster_config = self.__config.cluster_config
+        #Database cofig
+        self.__db_host = self.__db_cluster_config['HOST']
+        self.__db_name = self.__db_cluster_config['DB_NAME']
+        self.__db_user = self.__db_cluster_config['DB_USER']
+        self.__db_pass = self.__db_cluster_config['DB_PASSWORD']
+        self.__db_port = self.__db_cluster_config['DB_PORT']
+
+    def load_staging_tables(self, cur, conn):
+        print('Initialize Copy Tables')
+        for query in self.__sql_queries.copy_tables():
+            cur.execute(query)
+            conn.commit()
+
+    def insert_tables(self, cur, conn):
+        print('Initialize Insert Tables')
+        for query in self.__sql_queries.insert_tables():
+            cur.execute(query)
+            conn.commit()
+
+    def process(self):
+        conn = psycopg2.connect("host={} \
+                                dbname={} \
+                                user={} \
+                                password={} \
+                                port={}".format(self.__db_host,
+                                                self.__db_name,
+                                                self.__db_user,
+                                                self.__db_pass,
+                                                self.__db_port))
+        cur = conn.cursor()
+        
+        self.load_staging_tables(cur, conn)
+        self.insert_tables(cur, conn)
+
+        conn.close()
