@@ -250,3 +250,44 @@ class ETL:
         self.insert_tables(cur, conn)
 
         conn.close()
+
+class DatabaseManager:
+
+    def __init__(self):
+        self.__sql_queries = SQLQueries()
+        self.__config = Config()
+        self.__db_cluster_config = self.__config.cluster_config
+        #Database cofig
+        self.__db_host = self.__db_cluster_config['HOST']
+        self.__db_name = self.__db_cluster_config['DB_NAME']
+        self.__db_user = self.__db_cluster_config['DB_USER']
+        self.__db_pass = self.__db_cluster_config['DB_PASSWORD']
+        self.__db_port = self.__db_cluster_config['DB_PORT']
+
+    def drop_tables(self, cur, conn):
+        for query in self.__sql_queries.drop_tables():
+            cur.execute(query)
+            conn.commit()
+
+
+    def create_tables(self, cur, conn):
+        for query in self.__sql_queries.create_tables():
+            cur.execute(query)
+            conn.commit()
+
+    def process(self):
+        conn = psycopg2.connect("host={} \
+                                dbname={} \
+                                user={} \
+                                password={} \
+                                port={}".format(self.__db_host,
+                                                self.__db_name,
+                                                self.__db_user,
+                                                self.__db_pass,
+                                                self.__db_port))
+        cur = conn.cursor()
+        
+        self.drop_tables(cur, conn)
+        self.create_tables(cur, conn)
+
+        conn.close()
