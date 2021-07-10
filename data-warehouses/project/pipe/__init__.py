@@ -265,16 +265,19 @@ class DatabaseManager:
         self.__db_port = self.__db_cluster_config['DB_PORT']
 
     def drop_tables(self, cur, conn):
+        print('Dropping tables if exists ...')
         for query in self.__sql_queries.drop_tables():
             cur.execute(query)
             conn.commit()
-
+        print('Process finished!')
 
     def create_tables(self, cur, conn):
+        print('Creating tables ...')
         for query in self.__sql_queries.create_tables():
             cur.execute(query)
             conn.commit()
-
+        print('Process finished!')
+        
     def process(self):
         conn = psycopg2.connect("host={} \
                                 dbname={} \
