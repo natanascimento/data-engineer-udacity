@@ -1,0 +1,35 @@
+version: '3.1'
+
+services:
+
+    postgres:
+        image: postgres
+        container_name: postgres
+        hostname: postgres
+        restart: always
+        environment:
+            - POSTGRES_USER=natan
+            - POSTGRES_PASSWORD=natan123
+            - POSTGRES_DB=dw_udacity
+        ports:
+            - 15432:5432
+        networks:
+            - postgres-networks
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin4
+        hostname: pgadmin4
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=natan@natanascimento.com
+            - PGADMIN_DEFAULT_PASSWORD=natan123
+        ports:
+            - 18080:80
+        depends_on:
+            - postgres
+        networks:
+            - postgres-networks
+
+networks: 
+    postgres-networks:
+        driver: bridge
