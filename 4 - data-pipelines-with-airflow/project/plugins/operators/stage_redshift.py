@@ -51,6 +51,3 @@ class StageToRedshiftOperator(BaseOperator):
         
         redshift_hook.run(copy_query)
         self.log.info(f"Table {self.__table_name} staged!!")
-
-
-
