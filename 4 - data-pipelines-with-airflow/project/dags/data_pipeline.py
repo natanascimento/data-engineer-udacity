@@ -15,7 +15,7 @@ song_s3_key = os.environ.get('SONG_S3_KEY')
 log_s3_key = os.environ.get('LOG_S3_KEY')
 log_json_file = os.environ.get('LOG_JSON_FILE')
 
-dag_name = 'PIPE_NANODEGREE_PROJECT'
+dag_name = 'PIPE_EVENT_LOGS'
 
 default_args = {
     'owner': 'Natan Nascimento',
