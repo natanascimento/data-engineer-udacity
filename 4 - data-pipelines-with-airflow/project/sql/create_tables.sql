@@ -81,8 +81,3 @@ CREATE TABLE IF NOT EXISTS public.users (
 	"level" varchar(256),
 	CONSTRAINT users_pkey PRIMARY KEY (userid)
 );
-
-
-
-
-
