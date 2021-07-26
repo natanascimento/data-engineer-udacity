@@ -4,7 +4,7 @@ from airflow.utils.decorators import apply_defaults
 import os
 
 
-class CreateTableOperator:
+class CreateTableOperator(BaseOperator):
     
     
     ui_color = '#358140'
@@ -17,11 +17,11 @@ class CreateTableOperator:
     def __init__(self, redshift_conn_id = "", *args, **kwargs):
         
         super(CreateTableOperator, self).__init__(*args, **kwargs)
-        self.redshift_conn_id = redshift_conn_id
+        self.__redshift_conn_id = redshift_conn_id
         
     def execute(self, context):
         self.log.info('Creating connection!')
-        redshift = PostgresHook(postgres_conn_id = self.redshift_conn_id)
+        redshift = PostgresHook(postgres_conn_id = self.__redshift_conn_id)
 
         self.log.info('Executing creating tables!')
         queries =  open(__SQL_FILE, 'r').read()
