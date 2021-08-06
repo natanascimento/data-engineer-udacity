@@ -40,3 +40,8 @@ MANIFEST
 
 # VSCode
 .vscode/settings.json
+
+# Logs files
+*.py.log
+*.log
+logs/
