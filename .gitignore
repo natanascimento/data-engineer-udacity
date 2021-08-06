@@ -15,5 +15,28 @@ ENV/
 env.bak/
 venv.bak/
 
-##MacOs folder's attributes
+# MacOs folder's attributes
 **/.DS_Store
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# VSCode
+.vscode/settings.json
