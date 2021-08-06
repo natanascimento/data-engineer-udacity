@@ -70,7 +70,3 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': '{} was been collected and injested to the S3.'.format(stock_method)
     }
-
-{
-  "stock_method": "OVERVIEW"
-}
