@@ -50,7 +50,7 @@ jobs:
          #install PIP
          python -m pip install --upgrade pip
          #zip files into current directory
-         zip -r lambda_function.zip ./serverless/
+         zip -r lambda_function.zip ./5 - capstone/serverless/
          
          #for installing chrome
          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
