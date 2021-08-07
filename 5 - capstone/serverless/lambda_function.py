@@ -24,11 +24,11 @@ def generate_uri(stock_method,
     return uri
 
 def lambda_handler(event, context):
-    AWS_S3_BUCKET = os.environ["S3_BUCKET"]
-    AWS_ACCESS_KEY_ID = os.environ["ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = os.environ["SECRET_ACCESS_KEY"]
-    AWS_SESSION_TOKEN = os.environ["SESSION_TOKEN"]
-    STOCK_API_KEY = os.environ['STOCK_API_KEY']
+    AWS_S3_BUCKET = event["S3_BUCKET"]
+    AWS_ACCESS_KEY_ID = event["ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = event["SECRET_ACCESS_KEY"]
+    AWS_SESSION_TOKEN = event["SESSION_TOKEN"]
+    STOCK_API_KEY = event['STOCK_API_KEY']
 
     s3_client = boto3.client(
         "s3",
@@ -44,21 +44,19 @@ def lambda_handler(event, context):
                                     
     companies = json.loads(response.get("Body").read().decode('utf-8'))
     
-    
-    
     try:
         for company in companies:
-            if company['Symbol'].startswith('Z'):
-                uri = generate_uri(stock_method,
-                                company['Symbol'],
-                                STOCK_API_KEY)
-                response = requests.get(uri)
-                data = response.json()
-                data = bytes(json.dumps(data).encode('UTF-8'))
-                s3_client.put_object(Body=data, 
-                                Bucket=AWS_S3_BUCKET, 
-                                Key='{}/{}.json'.format(stock_method.lower(),
-                                                    company['Symbol']))
+            uri = generate_uri(stock_method,
+                            company['Symbol'],
+                            STOCK_API_KEY)
+            response = requests.get(uri)
+            data = response.json()
+            data = bytes(json.dumps(data).encode('UTF-8'))
+            s3_client.put_object(Body=data, 
+                            Bucket=AWS_S3_BUCKET, 
+                            Key='stock_method={}/company={}/{}.json'.format(stock_method.lower(),
+                                                                        company['Symbol'],
+                                                                        stock_method.lower()))
             
     except Exception as e:
         return {
