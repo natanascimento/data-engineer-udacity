@@ -40,10 +40,6 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: us-east-1
-        profile_name: default
-        project_name: FinancialDataIngestion
-        runtime: python3.7
-        s3_bucket: natanascimento-bronze
     
     # Runs a set of commands using the runners shell; THIS DOESN'T WORK
     - name: Run a multi-line script
