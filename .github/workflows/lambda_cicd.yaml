@@ -47,10 +47,10 @@ jobs:
          #install PIP
          python -m pip install --upgrade pip
          #zip files into current directory
-         zip -r lambda_function.zip ./5\ -\ capstone/serverless/
+         zip -r lambda_functions.zip ./5\ -\ capstone/serverless/
          ls -la 
          #for installing chrome
-         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+         wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
          sudo dpkg -i google-chrome-stable_current_amd64.deb
          
          #ensuring current working directory is accessible by the function--this might not be doing anything
@@ -63,4 +63,4 @@ jobs:
             #name of my AWS Lambda Function
             function_name: FinancialDataIngestion
             #contains all the files in my github repository
-            zip_file: lambda_function.zip
+            zip_file: lambda_functions.zip
