@@ -25,7 +25,7 @@ jobs:
          #install PIP
          python -m pip install --upgrade pip
          #zip files into current directory
-         zip -r lambda_functions.zip ./5\ -\ capstone/serverless/
+         zip -r lambda_functions.zip ./5-capstone/serverless/
          #for installing chrome
          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
          sudo dpkg -i google-chrome-stable_current_amd64.deb
@@ -38,4 +38,4 @@ jobs:
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: FinancialDataIngestion
-        zip_file: lambda_functions.zip
+        zip_file: ./lambda_functions.zip
