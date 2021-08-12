@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+    postgres:
+        image: postgres
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin4
+        hostname: pgadmin4
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=admin@natanascimento.com
+            - PGADMIN_DEFAULT_PASSWORD=123456
+        depends_on:
+            - postgres
+        ports:
+            - "18080:80"
+    scheduler:
+        build: .
+        command: scheduler
+        deploy:
+            restart_policy:
+                condition: on-failure
+        depends_on:
+            - postgres
+        env_file:
+            - .env
+        volumes:
+            - ./airflow/dags:/opt/airflow/dags
+            - ./airflow/logs:/opt/airflow/logs
+    webserver:
+        build: .
+        entrypoint: ./scripts/entrypoint.sh
+        deploy:
+            restart_policy:
+                condition: on-failure
+        depends_on:
+            - postgres
+            - scheduler
+        env_file:
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+            - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+        volumes:
+            - ./airflow/dags:/opt/airflow/dags
+            - ./airflow/logs:/opt/airflow/logs
+            - ./airflow/scripts:/opt/airflow/scripts
+        ports:
+            - "8080:8080"

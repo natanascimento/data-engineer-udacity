@@ -1,25 +1,37 @@
-name: Deploy Lambda
-
+name: CI
 on:
-  #when there is a push to the master
   push:
     branches: [ main ]
-  #when there is a pull to the master
   pull_request:
     branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@master
-    - name: Deploy code to Lambda
-      uses: mariamrf/py-lambda-action@v1.0.0
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
-        lambda_layer_arn: 'arn:aws:lambda:us-east-1:944182564155:function:FinancialDataIngestion'
-        lambda_function_name: 'FinancialDataIngestion'
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: 'us-east-2'
+        python-version: '3.7'
+    - name: Configure AWS credentials from Production account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    - name: Run a multi-line script
+      run: |
+         #install PIP
+         python -m pip install --upgrade pip
+         #zip files into current directory
+         zip -r lambda_functions.zip ./5-capstone/serverless/
+         #ensuring current working directory is accessible by the function--this might not be doing anything
+         export PATH=$PATH:$(pwd)/5-capstone/serverless/
+    - name: AWS Lambda Deploy
+      uses: appleboy/lambda-action@v0.0.4
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        function_name: FinancialDataIngestion
+        zip_file: lambda_functions.zip
