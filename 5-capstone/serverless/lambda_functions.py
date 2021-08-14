@@ -27,14 +27,12 @@ def lambda_handler(event, context):
     AWS_S3_BUCKET = event["S3_BUCKET"]
     AWS_ACCESS_KEY_ID = event["ACCESS_KEY_ID"]
     AWS_SECRET_ACCESS_KEY = event["SECRET_ACCESS_KEY"]
-    AWS_SESSION_TOKEN = event["SESSION_TOKEN"]
     STOCK_API_KEY = event['STOCK_API_KEY']
 
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=AWS_ACCESS_KEY_ID,
         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        aws_session_token=AWS_SESSION_TOKEN,
     )
 
     stock_method = event['stock_method']
