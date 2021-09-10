@@ -2,16 +2,12 @@ name: Get Financial Data CI/CD
 
 on:
   push:
-    paths: '/5-capstone/serverless/get_financial_data/**'
-
-  pull_request:
-    branches: 
     - main 
-     
+    paths: '/5-capstone/serverless/get_financial_data/**' 
     
 jobs:
   build:
-    if: ${{ github.event.pull_request.merged }}
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
