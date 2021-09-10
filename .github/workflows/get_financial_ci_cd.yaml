@@ -5,8 +5,7 @@ on:
     paths: '/5-capstone/serverless/get_financial_data/**'
 
   pull_request:
-    branches: 
-    - main 
+    branches: [main] 
      
     
 jobs:
