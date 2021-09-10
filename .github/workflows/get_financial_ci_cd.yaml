@@ -1,9 +1,18 @@
-name: CI
+name: Get Financial Data CI/CD
+
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - /5-capstone/serverless/get_financial_data/
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,9 +33,9 @@ jobs:
          #install PIP
          python -m pip install --upgrade pip
          #zip files into current directory
-         zip -r lambda_functions.zip ./5-capstone/serverless/
+         zip -r lambda_functions.zip ./5-capstone/serverless/get_financial_data
          #ensuring current working directory is accessible by the function--this might not be doing anything
-         export PATH=$PATH:$(pwd)/5-capstone/serverless/
+         export PATH=$PATH:$(pwd)/5-capstone/serverless/get_financial_data
     - name: AWS Lambda Deploy
       uses: appleboy/lambda-action@v0.0.4
       with:
