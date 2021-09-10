@@ -3,15 +3,7 @@ name: Get Financial Data CI/CD
 on:
   push:
     branches: [ main ]
-
-trigger:
-  batch: true
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - /5-capstone/serverless/get_financial_data/
+    paths: '/5-capstone/serverless/get_financial_data/**'
 
 jobs:
   build:
