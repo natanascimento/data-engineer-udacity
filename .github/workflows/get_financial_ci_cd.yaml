@@ -1,10 +1,9 @@
 name: Get Financial Data CI/CD
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
-    paths: '/5-capstone/serverless/get_financial_data/**'
-  types: [closed] 
+    paths: '/5-capstone/serverless/get_financial_data/**' 
 
 jobs:
   build:
