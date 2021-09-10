@@ -1,20 +1,14 @@
 name: Get Financial Data CI/CD
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
-
-trigger:
-  batch: true
-  branches:
-    include:
-      - main
-  paths:
-    include:
-      - /5-capstone/serverless/get_financial_data/
+    paths: '/5-capstone/serverless/get_financial_data/**'
+  types: [closed] 
 
 jobs:
   build:
+    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
