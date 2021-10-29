@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import os
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
+from operators import FinancialOperator
 
 dag_name = 'PIPE_EVENT_LOGS'
 
@@ -24,6 +25,11 @@ dag = DAG(dag_name,
         )
 
 start_operator = DummyOperator(task_id='StartJob',  dag=dag)
+financialoperator = FinancialOperator(task_id='FinancialOperator', 
+                                      s3_bucket='teste',
+                                      access_id_key="teste",
+                                      secret_access_key="teste",
+                                      dag=dag)
 finish_operator = DummyOperator(task_id='FinishJob',  dag=dag)
 
-start_operator >> finish_operator
+start_operator >> financialoperator >> finish_operator
