@@ -8,5 +8,6 @@ import operators
 class FinancialPlugin(AirflowPlugin):
     name = "financial_plugin"
     operators = [
-        operators.DataQualityOperator
+        operators.DataQualityOperator,
+        operators.FinancialOperator
     ]
