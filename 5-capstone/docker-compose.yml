@@ -25,11 +25,14 @@ services:
                 condition: on-failure
         depends_on:
             - postgres
-        env_file:
-            - .env
+        environment:
+            - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+            - AIRFLOW__CORE__EXECUTOR=LocalExecutor
         volumes:
             - ./airflow/dags:/opt/airflow/dags
             - ./airflow/logs:/opt/airflow/logs
+            - ./airflow/scripts:/opt/airflow/scripts
+            - ./airflow/plugins:/opt/airflow/plugins
     webserver:
         build: .
         entrypoint: ./scripts/entrypoint.sh
@@ -39,12 +42,13 @@ services:
         depends_on:
             - postgres
             - scheduler
-        env_file:
+        environment:
             - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
             - AIRFLOW__CORE__EXECUTOR=LocalExecutor
         volumes:
             - ./airflow/dags:/opt/airflow/dags
             - ./airflow/logs:/opt/airflow/logs
             - ./airflow/scripts:/opt/airflow/scripts
+            - ./airflow/plugins:/opt/airflow/plugins
         ports:
             - "8080:8080"
