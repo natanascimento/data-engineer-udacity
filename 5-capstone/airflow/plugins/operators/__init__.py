@@ -1,7 +1,9 @@
 from operators.data_quality import DataQualityOperator
-from operators.financial import FinancialOperator
+from operators.financial_extractor import FinancialExtractorOperator
+from operators.datalake import DataLakeOperator
 
 __all__ = [
     'DataQualityOperator',
-    'FinancialOperator'
+    'FinancialExtractorOperator',
+    'DataLakeOperator'
 ]
