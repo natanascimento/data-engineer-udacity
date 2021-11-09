@@ -11,13 +11,13 @@ class FinancialExtractorOperator(BaseOperator):
     ui_color = '#358140'
 
     @apply_defaults
-    def __init__(self, *args, **kwargs):
+    def __init__(self, stock_method:str, *args, **kwargs):
         super(FinancialExtractorOperator, self).__init__(*args, **kwargs)
         self.__AWS_S3_BUCKET = Variable.get("S3_BUCKET_BRONZE")
         self.__AWS_ACCESS_KEY_ID = Variable.get("USER_ACCESS_KEY_ID")
         self.__AWS_SECRET_ACCESS_KEY = Variable.get("USER_SECRET_ACCESS_KEY")
         self.__STOCK_API_KEY = Variable.get("STOCK_API_KEY")
-        self.__STOCK_METHOD = Variable.get("STOCK_METHOD")
+        self.__STOCK_METHOD = stock_method
         
     @staticmethod
     def __generate_uri(stock_method,
@@ -52,7 +52,7 @@ class FinancialExtractorOperator(BaseOperator):
                                             
             companies = json.loads(response.get("Body").read().decode('utf-8'))
             
-            for company in companies:
+            for company in companies: 
                 uri = self.__generate_uri(self.__STOCK_METHOD,
                                     company['Symbol'],
                                     self.__STOCK_API_KEY)
