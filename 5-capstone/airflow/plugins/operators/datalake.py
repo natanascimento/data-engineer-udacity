@@ -16,7 +16,9 @@ class DataLakeOperator(BaseOperator):
         self.__S3_BUCKET_BRONZE = Variable.get("S3_BUCKET_BRONZE")
         self.__S3_BUCKET_SILVER = Variable.get("S3_BUCKET_SILVER")
         self.__S3_BUCKET_GOLD = Variable.get("S3_BUCKET_GOLD")
-        self.__layers = [self.__S3_BUCKET_BRONZE, self.__S3_BUCKET_SILVER, self.__S3_BUCKET_GOLD]
+        self.__S3_BUCKET_SPARK_CODE = Variable.get("S3_BUCKET_SPARK_CODE")
+        self.__layers = [self.__S3_BUCKET_BRONZE, self.__S3_BUCKET_SILVER, 
+                        self.__S3_BUCKET_GOLD, self.__S3_BUCKET_SPARK_CODE]
         self.__AWS_ACCESS_KEY_ID = Variable.get("USER_ACCESS_KEY_ID")
         self.__AWS_SECRET_ACCESS_KEY = Variable.get("USER_SECRET_ACCESS_KEY")
         self.__COMPANIES_URL = Variable.get("COMPANIES_URL")
