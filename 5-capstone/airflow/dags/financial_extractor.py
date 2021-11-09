@@ -16,14 +16,23 @@ default_args = {
 
 dag = DAG('PIPE_FINANCE_DATA',
           default_args=default_args,
-          description='Load and transform data in S3 with Airflow'
+          description='Extract and Load data into Data Lake from Finance API with Airflow'
         )
 
 start_operator = DummyOperator(task_id='StartJob',  dag=dag)
 
-data_extractor = FinancialExtractorOperator(task_id='FinancialDataExtractor',
+daily_extractor = FinancialExtractorOperator(task_id='TimeSeriesDailyDataExtractor',
+                                            stock_method='TIME_SERIES_DAILY_ADJUSTED',
+                                            dag=dag)
+
+overview_extractor = FinancialExtractorOperator(task_id='CompanyOverviewDataExtractor',
+                                            stock_method='OVERVIEW',
+                                            dag=dag)
+
+earnings_extractor = FinancialExtractorOperator(task_id='CompanyEarningsExtractor',
+                                            stock_method='EARNINGS',
                                             dag=dag)
 
 finish_operator = DummyOperator(task_id='FinishJob',  dag=dag)
 
-start_operator >> data_extractor >> finish_operator
+start_operator >> [daily_extractor,overview_extractor,earnings_extractor] >> finish_operator
