@@ -9,5 +9,6 @@ class FinancialPlugin(AirflowPlugin):
     name = "financial_plugin"
     operators = [
         operators.DataQualityOperator,
-        operators.FinancialOperator
+        operators.FinancialExtractorOperator,
+        operators.DataLakeOperator
     ]
