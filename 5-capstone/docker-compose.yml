@@ -55,4 +55,4 @@ services:
             - ./airflow/scripts:/opt/airflow/scripts
             - ./airflow/plugins:/opt/airflow/plugins
         ports:
-            - "8080:8080"
+            - "8090:8080"
