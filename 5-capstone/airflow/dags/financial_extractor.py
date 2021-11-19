@@ -14,7 +14,7 @@ default_args = {
     'catchup' : False,
 }
 
-dag = DAG('PIPE_FINANCE_DATA',
+dag = DAG('PIPE_FINANCE_DATA_EXTRACTOR',
           default_args=default_args,
           description='Extract and Load data into Data Lake from Finance API with Airflow'
         )
@@ -35,4 +35,4 @@ earnings_extractor = FinancialExtractorOperator(task_id='CompanyEarningsExtracto
 
 finish_operator = DummyOperator(task_id='FinishJob',  dag=dag)
 
-start_operator >> [daily_extractor,overview_extractor,earnings_extractor] >> finish_operator
+start_operator >> [daily_extractor, overview_extractor, earnings_extractor] >> finish_operator
