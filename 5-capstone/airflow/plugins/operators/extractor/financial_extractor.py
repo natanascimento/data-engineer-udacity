@@ -3,6 +3,7 @@ from airflow.utils.decorators import apply_defaults
 from airflow.models import Variable
 import json
 import boto3
+import time
 import requests
 
 
@@ -56,6 +57,7 @@ class FinancialExtractorOperator(BaseOperator):
                 uri = self.__generate_uri(self.__STOCK_METHOD,
                                     company['Symbol'],
                                     self.__STOCK_API_KEY)
+                time.sleep(15)
                 response = requests.get(uri)
                 data = response.json()
                 data = bytes(json.dumps(data).encode('UTF-8'))

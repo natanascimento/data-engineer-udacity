@@ -1,28 +1,35 @@
-from airflow.hooks.postgres_hook import PostgresHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
+from airflow.models import Variable
+import boto3
+import json
+
 
 class DataQualityOperator(BaseOperator):
 
     ui_color = '#89DA59'
 
     @apply_defaults
-    def __init__(self,
-                 redshift_conn_id="",
-                 tables=[],
-                 *args, **kwargs):
+    def __init__(self, bucket:str, *args, **kwargs):
 
         super(DataQualityOperator, self).__init__(*args, **kwargs)
-        self.__redshift_conn_id = redshift_conn_id
-        self.__tables = tables
+        self.__BUCKET = bucket
+        self.__AWS_ACCESS_KEY_ID = Variable.get("USER_ACCESS_KEY_ID")
+        self.__AWS_SECRET_ACCESS_KEY = Variable.get("USER_SECRET_ACCESS_KEY")
+
+    def client_connection(self):
+        client = boto3.client(
+            "s3",
+            aws_access_key_id=self.__AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=self.__AWS_SECRET_ACCESS_KEY,
+        )
+        return client
 
     def execute(self, context):
-        redshift_hook = PostgresHook(self.redshift_conn_id)
-        for table in self.tables:
-            records = redshift_hook.get_records(f"SELECT COUNT(*) FROM {table}")
-            if len(records) < 1 or len(records[0]) < 1:
-                raise ValueError(f"Data quality check failed. {table} returned no results")
-            num_records = records[0][0]
-            if num_records < 1:
-                raise ValueError(f"Data quality check failed. {table} contained 0 rows")
-            self.log.info(f"Data quality on table {table} check passed with {records[0][0]} records")
+        bucket = self.client_connection().Bucket(self.__BUCKET)
+        records = []
+        for obj in bucket.objects.all():
+            records.append(obj)
+        if len(records) < 1:
+            raise ValueError(f"Data quality check failed. {self.__BUCKET} returned no results")
+        self.log.info(f"Data quality on bucket {self.__BUCKET} check passed with {len(records)} records")
