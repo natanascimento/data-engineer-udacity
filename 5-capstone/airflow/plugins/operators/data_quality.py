@@ -1,8 +1,8 @@
+from os import EX_CANTCREAT
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from airflow.models import Variable
 import boto3
-import json
 
 
 class DataQualityOperator(BaseOperator):
@@ -11,7 +11,6 @@ class DataQualityOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self, bucket:str, *args, **kwargs):
-
         super(DataQualityOperator, self).__init__(*args, **kwargs)
         self.__BUCKET = bucket
         self.__AWS_ACCESS_KEY_ID = Variable.get("USER_ACCESS_KEY_ID")
@@ -26,10 +25,13 @@ class DataQualityOperator(BaseOperator):
         return client
 
     def execute(self, context):
-        bucket = self.client_connection().Bucket(self.__BUCKET)
-        records = []
-        for obj in bucket.objects.all():
-            records.append(obj)
-        if len(records) < 1:
-            raise ValueError(f"Data quality check failed. {self.__BUCKET} returned no results")
-        self.log.info(f"Data quality on bucket {self.__BUCKET} check passed with {len(records)} records")
+        try:
+            bucket = self.client_connection().Bucket(self.__BUCKET)
+            records = []
+            for obj in bucket.objects.all():
+                records.append(obj)
+            if len(records) < 1:
+                raise ValueError(f"Data quality check failed. {self.__BUCKET} returned no results")
+            self.log.info(f"Data quality on bucket {self.__BUCKET} check passed with {len(records)} records")
+        except Exception as exception:
+            self.log.info(exception)

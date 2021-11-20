@@ -1,7 +1,7 @@
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from operators import FinancialProcessorOperator
+from operators import FinancialProcessorOperator, EMROperator
 
 
 default_args = {
@@ -33,6 +33,9 @@ daily_process = FinancialProcessorOperator(task_id='TimeSeriesDailyProcessing',
                                               stock_method='TIME_SERIES_DAILY_ADJUSTED',
                                               dag=dag)
 
+generate_gold = EMROperator(task_id='GenerateGoldLayer',
+                            dag=dag)
+
 finish_operator = DummyOperator(task_id='FinishJob',  dag=dag)
 
-start_operator >> [daily_process, earnings_processing, overview_processing] >> finish_operator
+start_operator >> [daily_process, earnings_processing, overview_processing] >> generate_gold >> finish_operator

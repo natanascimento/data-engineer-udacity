@@ -6,6 +6,8 @@ services:
             - POSTGRES_USER=airflow
             - POSTGRES_PASSWORD=airflow
             - POSTGRES_DB=airflow
+        ports:
+            - "5432:5432"
     pgadmin:
         image: dpage/pgadmin4
         container_name: pgadmin4
@@ -35,6 +37,7 @@ services:
             - ./airflow/logs:/opt/airflow/logs
             - ./airflow/scripts:/opt/airflow/scripts
             - ./airflow/plugins:/opt/airflow/plugins
+            - ./src/spark:/opt/airflow/spark-code
     webserver:
         build: .
         entrypoint: ./scripts/entrypoint.sh
@@ -56,3 +59,9 @@ services:
             - ./airflow/plugins:/opt/airflow/plugins
         ports:
             - "8090:8080"
+    spark:
+        image: bitnami/spark:latest
+        environment:
+            - SPARK_MODE=master
+        volumes: 
+            - ./src/spark:/opt/bitnami/spark
