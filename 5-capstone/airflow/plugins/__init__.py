@@ -11,5 +11,6 @@ class FinancialPlugin(AirflowPlugin):
         operators.DataQualityOperator,
         operators.FinancialExtractorOperator,
         operators.DataLakeOperator,
-        operators.FinancialProcessorOperator
+        operators.FinancialProcessorOperator,
+        operators.EMROperator
     ]
