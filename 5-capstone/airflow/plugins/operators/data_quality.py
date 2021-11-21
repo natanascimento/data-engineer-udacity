@@ -1,8 +1,9 @@
-from os import EX_CANTCREAT
+from os import EX_CANTCREAT, replace
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from airflow.models import Variable
 import boto3
+import json
 
 
 class DataQualityOperator(BaseOperator):
@@ -24,7 +25,7 @@ class DataQualityOperator(BaseOperator):
         )
         return client
 
-    def execute(self, context):
+    def analyse_bucket(self):
         try:
             bucket = self.client_connection().Bucket(self.__BUCKET)
             records = []
@@ -33,5 +34,23 @@ class DataQualityOperator(BaseOperator):
             if len(records) < 1:
                 raise ValueError(f"Data quality check failed. {self.__BUCKET} returned no results")
             self.log.info(f"Data quality on bucket {self.__BUCKET} check passed with {len(records)} records")
+        except Exception as exception:
+            self.log.info(exception)
+
+    def analyse_company_symbol(self):
+        response = self.client_connection().get_object(Bucket=self.__AWS_S3_BUCKET,
+                                        Key="companies/s&p-500-companies.json")
+                                        
+        companies = json.loads(response.get("Body").read().decode('utf-8'))
+        
+        for company in companies: 
+            if "." in company['Symbol']:
+                raise ValueError(f"Data quality check failed. You need analyse the {company['Symbol']} because he has a semantic problem with the symbol name")
+            self.log.info(f"Data quality on company symbol {company['Symbol']} check passed!")
+
+    def execute(self, context):
+        try:
+            self.analyse_bucket()
+            self.analyse_company_symbol()
         except Exception as exception:
             self.log.info(exception)
