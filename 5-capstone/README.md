@@ -15,6 +15,7 @@ The project intends to carry out the collection, transformation and analysis of 
 - AWS EC2;
 - AWS S3;
 - Docker;
+- Databricks Community;
 
 ## Architecture 
 
@@ -100,6 +101,16 @@ After all the services change to a ```running``` status, you can access the envi
 
 The services that will perform the orchestration of the pipelines will be Airflow, it has DAG's ***(Directed acyclic graph)*** where you can perform the allocation of operations such as loading data from one path to another.
 
+## Data Models
+
+The data modeling was developed thinking about carrying out a better grouping of data so that the business fronts can make better decisions when looking at the data treated in the gold layer.
+
+![Pipeline Architecture](./docs/datamodels.drawio.png)
+
+## Data Dictionary
+
+To access the data dictionary, just [click here](./docs/datadictionary.md)
+
 ## Data Pipelines
 - PIPE_DATALAKE_SETUP
     - Pipeline responsible for creating the Datalake environment and publishing all S&P500 companies.
@@ -112,6 +123,9 @@ The services that will perform the orchestration of the pipelines will be Airflo
 
 - PIPE_FINANCE_DATA_QUALITY_ASSURANCE
     - Pipeline responsible for evaluating data quality in data lake buckets.
+    - This pipeline has two interactions with the data present in the data lake:
+        1. It evaluates whether data entering the lake is being listed within the lake;
+        2. It evaluates if the symbol of the company being interacted with does not have a sematic problem in the name, otherwise it returns an error and requests a change as soon as possible. This helps that errors do not occur within the interactions performed by further processing.
 
 - PIPE_FINANCE_GOLD_PROCESSING
     - Pipeline responsible for creating the gold layer and creating the dimension and facts layers that will be used in the business.
@@ -162,6 +176,11 @@ Data Lake was modeled thinking about improving the storage process and standardi
 
 To run all the pipelines mentioned above, just access the Airflow UI `http://< ec2-instance-ip >:< configured-port >` and set the pipelines to run in the sequence informed in the previous topic.
 
+## Table Analysis
+
+A preliminary analysis on top of data distribution within the gold data layer. I used Databricks as a form of programmatic access to use SQL Analytics and access parquet files with native SQL.
+
+![Pipeline Architecture](./docs/img/query_to_analyse_table_size.jpeg)
 
 ## Scenarios
 
@@ -172,7 +191,9 @@ To run all the pipelines mentioned above, just access the Airflow UI `http://< e
 
 - Pipelines would be run on 7am daily. How to update dashboard? Would it still work?
 
-    - DAG is scheduled to run every 10 minutes and can be configured to run every morning at 7 AM if required. 
+    - DAG is scheduled to run every 10 minutes and can be configured to run every morning at 7 AM if required.
+
+- The dataset must be updated on a daily basis, as the fact_stock_market table, which is provisioned within the gold layer, is a table that has all the market data for the shares of the ***S&P500 companies***, so it will be necessary to run the pipeline completely in all days. In this case, we will have a complete way of analyzing the ***D-1*** data.
 
 - Make it available to 100+ people
     - As we are using S3 as our Data Lake, it does not differ the amount of people, it will support the amount of requests and we will not have access concurrency problems.
